@@ -1,0 +1,9 @@
+{
+    "title": "Niucloud Vite Management side",
+    "login": "Login",
+    "logging": "Logging",
+    "userPlaceholder": "Please enter your account number",
+    "passwordPlaceholder": "Please enter your password",
+    "noMenuPermissionTip": "Your account has no available menu permission and cannot access the system. Please contact the administrator",
+    "menuLoadErrorTip": "Failed to load menu permission. You have been logged out, please log in again"
+}

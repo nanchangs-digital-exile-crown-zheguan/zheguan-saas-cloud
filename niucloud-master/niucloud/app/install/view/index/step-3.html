@@ -1,0 +1,589 @@
+{extend name="base"/}
+{block name="head"}
+<div class="page-title">参数配置</div>
+<div class="page-sub">填写数据库与站点基础信息，确认无误后即可开始安装。</div>
+
+<div class="error-banner hide" id="ncErrorBanner">
+	<div class="error-left">
+		<svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="8" fill="#E5484D"/><path d="M5.8 5.8l6.4 6.4M12.2 5.8l-6.4 6.4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>
+		<div class="error-text" id="ncErrorText"></div>
+	</div>
+	<button type="button" class="link-btn" id="ncCopyLog">复制日志</button>
+</div>
+{/block}
+{block name="main"}
+
+<form id="installForm" autocomplete="off">
+	<div class="card" id="ncFormCard">
+		<div class="form-section-head">
+			<svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6" rx="7" ry="3" stroke="#2563EB" stroke-width="1.7"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6" stroke="#2563EB" stroke-width="1.7"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3" stroke="#2563EB" stroke-width="1.7"/></svg>
+			<div class="t">数据库设置</div>
+		</div>
+		<div class="form-grid">
+			<div class="field">
+				<label><span class="required">*</span>数据库主机</label>
+				<input class="input" type="text" name="dbhost" id="dbhost" value="" placeholder="请输入数据库主机" data-nc-dbcheck="1" />
+				<div class="field-hint">一般为 localhost，如使用远程数据库请填写 IP 或域名</div>
+			</div>
+			<div class="field">
+				<label><span class="required">*</span>Mysql 端口</label>
+				<input class="input mono" type="text" name="dbport" id="dbport" value="3306" placeholder="请输入 Mysql 端口" data-nc-dbcheck="1" />
+				<div class="field-hint">一般为 3306</div>
+			</div>
+			<div class="field">
+				<label><span class="required">*</span>数据库用户名</label>
+				<input class="input" type="text" name="dbuser" id="dbuser" value="" placeholder="请输入数据库用户" data-nc-dbcheck="1" />
+				<div class="field-hint">一般为 root</div>
+			</div>
+			<div class="field">
+				<label><span class="required">*</span>数据库密码</label>
+				<input class="input" type="password" name="dbpwd" id="dbpwd" value="" placeholder="请输入数据库密码" data-nc-dbcheck="1" />
+				<div class="field-hint" id="dbpwdsta"></div>
+			</div>
+			<div class="field">
+				<label><span class="required">*</span>数据库名称</label>
+				<input class="input" type="text" name="dbname" id="dbname" value="" placeholder="请输入数据库名称" data-nc-dbcheck="1" />
+				<div class="field-hint" id="havedbsta"></div>
+			</div>
+			<div class="field">
+				<label>数据表前缀</label>
+				<input class="input mono" type="text" name="dbprefix" id="dbprefix" value="" placeholder="例如 niu_" />
+				<div class="field-hint">留空表示不使用前缀</div>
+			</div>
+			<div class="field">
+				<label>数据库编码</label>
+				<input class="input mono" type="text" value="utf8mb4" readonly="readonly" />
+				<div class="field-hint">默认 utf8mb4，无需修改</div>
+			</div>
+		</div>
+		<div class="alert-bar hide" id="ncSqlMode">
+			<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#E5484D"/><path d="M8 4.5v4.2" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11.4" r="0.9" fill="#fff"/></svg>
+			<span id="ncSqlModeText"></span>
+		</div>
+		<div class="section-divider"></div>
+		<div class="form-section-head">
+			<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#2563EB" stroke-width="1.7"/><path d="M3.5 12h17M12 3.5c2.2 2.4 3.3 5.3 3.3 8.5s-1.1 6.1-3.3 8.5c-2.2-2.4-3.3-5.3-3.3-8.5S9.8 5.9 12 3.5z" stroke="#2563EB" stroke-width="1.7"/></svg>
+			<div class="t">网站设置</div>
+		</div>
+		<div class="form-grid last">
+			<div class="field">
+				<label><span class="required">*</span>网站标题</label>
+				<input class="input" type="text" name="admin_name" id="admin_name" value="" placeholder="请输入网站标题" />
+				<div class="field-hint">将作为平台名称展示</div>
+			</div>
+			<div class="field">
+				<label><span class="required">*</span>管理员用户名</label>
+				<input class="input" type="text" name="username" id="username" value="" placeholder="请输入管理员用户名" />
+				<div class="field-hint">登录后台的账号</div>
+			</div>
+			<div class="field">
+				<label><span class="required">*</span>管理员密码</label>
+				<input class="input" type="password" name="password" id="password" value="" placeholder="请输入管理员密码" />
+				<div class="field-hint">建议包含字母与数字，长度不少于 8 位</div>
+			</div>
+			<div class="field">
+				<label><span class="required">*</span>确认密码</label>
+				<input class="input" type="password" name="password2" id="password2" value="" placeholder="请再次输入管理员密码" />
+				<div class="field-hint">请与上方密码保持一致</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="card hide" id="ncInstallCard">
+		<div class="progress-wrap">
+			<div class="progress-row">
+				<div class="progress-label" id="progressLabel">正在准备安装…</div>
+				<div class="progress-num mono" id="progressNum">0%</div>
+			</div>
+			<div class="progress-track">
+				<div class="progress-fill" id="progressFill"></div>
+			</div>
+			<div class="stage-row" id="stageRow"></div>
+		</div>
+		<div class="terminal" id="terminal">
+			<div class="term-empty">等待安装任务开始…</div>
+		</div>
+	</div>
+
+</form>
+{/block}
+{block name="foot"}
+<div class="footer-bar" id="ncFormFoot">
+	<div class="footer-hint">安装前请确认数据库信息，安装过程中不可修改</div>
+	<div class="btn-group">
+		<button type="button" class="btn btn-secondary" onclick="window.location.href='{$root_url}/install.php/index/index?step=2'">上一步</button>
+		<button type="button" class="btn btn-primary" id="ncSubmit">
+			开始安装
+			<svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7V5z" fill="#fff"/></svg>
+		</button>
+	</div>
+</div>
+
+<div class="footer-bar hide" id="ncInstallFoot">
+	<div class="footer-hint" id="ncInstallHint">安装大约需要 1-2 分钟，请保持页面打开，不要刷新或关闭浏览器</div>
+	<div class="btn-group">
+		<button type="button" class="btn btn-secondary" id="ncBackForm">返回修改</button>
+		<button type="button" class="btn btn-primary" id="ncRetry">
+			重试安装
+			<svg viewBox="0 0 24 24" fill="none"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v5h-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+		</button>
+	</div>
+</div>
+{/block}
+{block name="script"}
+<script>
+	NC.setStep(3);
+
+	var is_existdb = 1;
+	var dbMessage = '数据库账号或密码不能为空';
+	var installing = false;
+	var progress = 0;
+	var progressTarget = 8;
+	var animTimer = null;
+	var pollTimer = null;
+	var redirectTimer = null;
+
+	var STAGE_NAMES = ['写入配置', '创建数据表', '初始化菜单', '计划任务', '完成安装'];
+	var STAGE_LABELS = ['正在写入配置文件…', '正在创建数据表…', '正在初始化菜单…', '正在初始化计划任务…', '正在初始化站点数据…'];
+
+	$(function () {
+		$('#installForm').on('submit', function () {
+			doSubmit();
+			return false;
+		});
+
+		$('#ncSubmit').on('click', function () {
+			doSubmit();
+		});
+
+		$('#ncRetry').on('click', function () {
+			startInstall();
+		});
+
+		$('#ncBackForm').on('click', function () {
+			backToForm();
+		});
+
+		$('#ncCopyLog').on('click', function () {
+			copyLog();
+		});
+
+		bindDbCheck();
+		renderStages(0);
+	});
+
+	/* ================= 表单校验与提交 ================= */
+	function formValues() {
+		var data = {};
+		$.each($('#installForm').serializeArray(), function (i, item) {
+			data[item.name] = item.value;
+		});
+		return data;
+	}
+
+	var REQUIRED = ['dbhost', 'dbport', 'dbuser', 'dbpwd', 'dbname', 'admin_name', 'username', 'password', 'password2'];
+
+	function doSubmit() {
+		if (installing) {
+			return false;
+		}
+		var data = formValues();
+		for (var i = 0; i < REQUIRED.length; i++) {
+			if (!data[REQUIRED[i]]) {
+				var el = document.getElementById(REQUIRED[i]);
+				NC.alertError('信息不完整', (el && el.getAttribute('placeholder')) || '请完整填写安装信息');
+				if (el) {
+					el.focus();
+				}
+				return false;
+			}
+		}
+		if (data.password !== data.password2) {
+			NC.alertError('信息有误', '两次输入的密码不一致，请重新输入');
+			return false;
+		}
+
+		if (is_existdb === 2) {
+			NC.confirm('数据库已存在', '检测到数据库 ' + data.dbname + ' 中可能已存在数据表，继续安装将覆盖现有数据，且操作不可恢复。', function () {
+				startInstall();
+			}, { danger: true, okText: '继续安装' });
+		} else if (is_existdb <= 0) {
+			NC.alertError('数据库连接异常', dbMessage);
+		} else {
+			startInstall();
+		}
+		return false;
+	}
+
+	/* ================= 数据库连接检测 ================= */
+	function setHint(id, text, state) {
+		var el = document.getElementById(id);
+		if (!el) {
+			return;
+		}
+		el.className = 'field-hint' + (state ? ' ' + state : '');
+		if (state === 'loading') {
+			el.innerHTML = '<span class="spinner"></span>' + text;
+		} else {
+			el.innerHTML = text;
+		}
+	}
+
+	/* 数据库配置项（主机 / 端口 / 用户 / 密码 / 库名）任一变化都会触发检测 */
+	var dbCheckTimer = null;
+	var lastDbKey = '';
+
+	function dbParams() {
+		return {
+			dbhost: $('#dbhost').val(),
+			dbport: $('#dbport').val(),
+			dbuser: $('#dbuser').val(),
+			dbpwd: $('#dbpwd').val(),
+			dbname: $('#dbname').val()
+		};
+	}
+
+	function bindDbCheck() {
+		var fields = $('[data-nc-dbcheck]');
+		fields.on('change', function () {
+			checkDb();
+		});
+		fields.on('input', function () {
+			clearTimeout(dbCheckTimer);
+			dbCheckTimer = setTimeout(function () {
+				checkDb();
+			}, 700);
+		});
+	}
+
+	/* 统一检测入口：判断当前连接是否有效，并同步数据库是否存在 */
+	function checkDb(force) {
+		var data = dbParams();
+		var key = JSON.stringify([data.dbhost, data.dbport, data.dbuser, data.dbpwd, data.dbname]);
+
+		/* 参数没变化就不重复请求 */
+		if (!force && key === lastDbKey) {
+			return;
+		}
+		lastDbKey = key;
+
+		var hasName = $.trim(data.dbname) !== '';
+
+		setHint('dbpwdsta', '正在检测数据库连接…', 'loading');
+		if (hasName) {
+			setHint('havedbsta', '正在检测数据库…', 'loading');
+		}
+
+		$.ajax({
+			url: '{$root_url}/install.php/index/testdb',
+			data: data,
+			type: 'post',
+			dataType: 'json',
+			success: function (res) {
+				/* 已有更新的请求发出，丢弃过期结果 */
+				if (key !== lastDbKey) {
+					return;
+				}
+				var result = res.data || {};
+				is_existdb = result.status;
+				dbMessage = result.message;
+
+				if (result.status === -1) {
+					setHint('dbpwdsta', result.message, 'err');
+					$('#ncSqlMode').addClass('hide');
+					if (hasName) {
+						setHint('havedbsta', result.message, 'err');
+					}
+					return;
+				}
+
+				setHint('dbpwdsta', '数据库连接成功', 'ok');
+
+				if (result.status === -2) {
+					$('#ncSqlModeText').text(result.message);
+					$('#ncSqlMode').removeClass('hide');
+				} else {
+					$('#ncSqlMode').addClass('hide');
+				}
+
+				if (hasName) {
+					setHint('havedbsta', result.message, result.status === 2 ? 'ok' : '');
+				} else {
+					setHint('havedbsta', '', '');
+				}
+			},
+			error: function () {
+				if (key !== lastDbKey) {
+					return;
+				}
+				setHint('dbpwdsta', '数据库连接检测失败，请检查网络或服务', 'err');
+			}
+		});
+	}
+
+	/* ================= 安装进度 ================= */
+	function stageIndex(p) {
+		if (p >= 100) {
+			return 4;
+		}
+		if (p >= 88) {
+			return 3;
+		}
+		if (p >= 62) {
+			return 2;
+		}
+		if (p >= 20) {
+			return 1;
+		}
+		return 0;
+	}
+
+	function renderStages(p) {
+		var current = stageIndex(p);
+		var html = '';
+		for (var i = 0; i < STAGE_NAMES.length; i++) {
+			var cls = i < current ? 'done' : (i === current ? 'current' : '');
+			html += '<div class="stage ' + cls + '"><span class="dot"></span>' + STAGE_NAMES[i] + '</div>';
+		}
+		document.getElementById('stageRow').innerHTML = html;
+		document.getElementById('progressLabel').innerHTML = STAGE_LABELS[current];
+	}
+
+	function paint() {
+		var num = Math.floor(progress);
+		$('#progressNum').text(num + '%');
+		$('#progressFill').css('width', num + '%');
+		renderStages(num);
+	}
+
+	function animate() {
+		if (progress < progressTarget) {
+			progress += Math.max(0.4, (progressTarget - progress) * 0.1);
+			if (progress > progressTarget) {
+				progress = progressTarget;
+			}
+			paint();
+		}
+	}
+
+	function renderLog(list) {
+		var box = $('#terminal');
+		if (!list || !list.length) {
+			return;
+		}
+		var html = '';
+		for (var i = 0; i < list.length; i++) {
+			var msg = list[i][0] || '';
+			var state = list[i][1] || '';
+			var time = list[i][2] || '';
+			var cls = state === 'error' ? 'err' : (state === 'success' ? 'ok' : '');
+			html += '<div class="term-line ' + cls + '">';
+			html += '<span class="term-time">' + time + '</span>' + msg;
+			if (state === 'success') {
+				html += '<span class="term-tag">成功</span>';
+			}
+			html += '</div>';
+		}
+		box.html(html);
+		box.scrollTop(box[0].scrollHeight);
+	}
+
+	function logTarget(list) {
+		var target = 12;
+		for (var i = 0; i < list.length; i++) {
+			var msg = (list[i][0] || '') + '';
+			if (msg.indexOf('写入配置') > -1) {
+				target = Math.max(target, 24);
+			} else if (msg.indexOf('创建表') > -1) {
+				target = Math.max(target, target + 6);
+			} else if (msg.indexOf('初始化成功') > -1) {
+				target = Math.max(target, 82);
+			} else if (msg.indexOf('计划任务') > -1) {
+				target = Math.max(target, 90);
+			}
+		}
+		return Math.min(target, 95);
+	}
+
+	function lastError(list) {
+		for (var i = list.length - 1; i >= 0; i--) {
+			if (list[i][1] === 'error') {
+				return list[i][0];
+			}
+		}
+		return '安装过程中出现错误，请查看安装日志后重试';
+	}
+
+	/* ================= 安装流程 ================= */
+	function startInstall() {
+		if (installing) {
+			return;
+		}
+		installing = true;
+		progress = 0;
+		progressTarget = 8;
+
+		$('#ncErrorBanner').addClass('hide');
+		$('#ncFormCard').addClass('hide');
+		$('#ncFormFoot').addClass('hide');
+		$('#ncInstallCard').removeClass('hide');
+		$('#ncInstallFoot').addClass('hide');
+		$('#progressFill').removeClass('err');
+		$('#ncInstallHint').text('安装大约需要 1-2 分钟，请保持页面打开，不要刷新或关闭浏览器');
+		$('.page-title').text('正在安装');
+		$('.page-sub').text('安装过程中请勿刷新或关闭浏览器，完成后将自动跳转。');
+		$('#terminal').html('<div class="term-empty">安装任务已提交，正在等待服务器响应…</div>');
+		$('#ncScreenBody').scrollTop(0);
+		paint();
+
+		clearTimers();
+		animTimer = setInterval(animate, 80);
+		pollTimer = setTimeout(getStatus, 400);
+
+		var data = formValues();
+		$.ajax({
+			url: '{$root_url}/install.php/index/install',
+			data: data,
+			type: 'post',
+			dataType: 'json',
+			success: function (res) {
+				if (res.code === 1) {
+					$.ajax({
+						url: '{$root_url}/install.php/index/initData',
+						data: data,
+						type: 'post',
+						dataType: 'json',
+						success: function (result) {
+							if (result.code === 1) {
+								finish();
+							} else {
+								installFailed(result.msg);
+							}
+						},
+						error: function () {
+							installFailed('初始化数据失败，请查看安装日志后重试');
+						}
+					});
+				} else {
+					installFailed(res.msg);
+				}
+			},
+			error: function () {
+				installFailed('安装请求失败，请检查服务器状态后重试');
+			}
+		});
+	}
+
+	function getStatus() {
+		$.ajax({
+			url: '{$root_url}/install.php/index/getInstallInfo',
+			dataType: 'json',
+			type: 'get',
+			success: function (res) {
+				if (res.code !== 1) {
+					pollTimer = setTimeout(getStatus, 500);
+					return;
+				}
+				var list = res.data.log || [];
+				renderLog(list);
+				progressTarget = Math.max(progressTarget, logTarget(list));
+
+				if (res.data.status === 2) {
+					finish();
+					return;
+				}
+				if (res.data.status === -1) {
+					installFailed(lastError(list));
+					return;
+				}
+				pollTimer = setTimeout(getStatus, 300);
+			},
+			error: function () {
+				pollTimer = setTimeout(getStatus, 800);
+			}
+		});
+	}
+
+	function finish() {
+		if (!installing) {
+			return;
+		}
+		installing = false;
+		clearTimers();
+		progress = 100;
+		progressTarget = 100;
+		paint();
+		$('#progressLabel').html('安装完成，正在进入下一步…');
+		redirectTimer = setTimeout(function () {
+			window.location.href = '{$root_url}/install.php/index/installSuccess';
+		}, 800);
+	}
+
+	function installFailed(message) {
+		if (!installing) {
+			return;
+		}
+		installing = false;
+		clearTimers();
+		progressTarget = progress;
+		$('#progressFill').addClass('err');
+		$('#progressLabel').html('安装未完成');
+		$('#ncErrorText').text('安装失败：' + (message || '未知错误'));
+		$('#ncErrorBanner').removeClass('hide');
+		$('#ncInstallHint').text('请根据日志排查问题后重试，如多次失败请携带日志联系技术支持');
+		$('#ncInstallFoot').removeClass('hide');
+		$('#terminal').scrollTop(0);
+		$('#ncScreenBody').scrollTop(0);
+	}
+
+	function backToForm() {
+		installing = false;
+		clearTimers();
+		$('.page-title').text('参数配置');
+		$('.page-sub').text('填写数据库与站点基础信息，确认无误后即可开始安装。');
+		$('#ncErrorBanner').addClass('hide');
+		$('#ncInstallCard').addClass('hide');
+		$('#ncInstallFoot').addClass('hide');
+		$('#ncFormCard').removeClass('hide');
+		$('#ncFormFoot').removeClass('hide');
+	}
+
+	function clearTimers() {
+		if (animTimer) {
+			clearInterval(animTimer);
+			animTimer = null;
+		}
+		if (pollTimer) {
+			clearTimeout(pollTimer);
+			pollTimer = null;
+		}
+		if (redirectTimer) {
+			clearTimeout(redirectTimer);
+			redirectTimer = null;
+		}
+	}
+
+	function copyLog() {
+		var text = $('#terminal').text() || '';
+		if (!text) {
+			NC.toast('暂无可复制的日志');
+			return;
+		}
+		if (navigator.clipboard && navigator.clipboard.writeText) {
+			navigator.clipboard.writeText(text).then(function () {
+				NC.toast('日志已复制到剪贴板');
+			}, function () {
+				NC.toast('复制失败，请手动选择日志内容');
+			});
+		} else {
+			var input = document.createElement('textarea');
+			input.value = text;
+			document.body.appendChild(input);
+			input.select();
+			document.execCommand('copy');
+			document.body.removeChild(input);
+			NC.toast('日志已复制到剪贴板');
+		}
+	}
+</script>
+{/block}

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="renderer" content="webkit" />
+	<meta http-equiv="X-UA-COMPATIBLE" content="IE=edge,chrome=1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>安装向导 - NiuCloud</title>
+	<link rel="icon" type="image/x-icon" href="/static/resource/icon/app.ico" />
+	<!-- 修改 install.css 后请同步修改 v 值，避免浏览器缓存旧样式 -->
+	<link rel="stylesheet" type="text/css" href="INSTALL_CSS/install.css?v=20261014e" />
+	<script src="INSTALL_JS/jquery-3.1.1.js"></script>
+	{block name="resources"}{/block}
+</head>
+
+<body>
+<aside class="sidebar">
+	<div class="brand">
+		<div class="brand-logo">
+			<img src="/static/resource/icon/app.ico" alt="NIUCLOUD" />
+		</div>
+		<div>
+			<div class="brand-name">NIUCLOUD</div>
+			<div class="brand-ver">安装向导</div>
+		</div>
+	</div>
+
+	<div class="sec-label">安装步骤</div>
+	<div class="steps" id="ncSteps"></div>
+
+	<div class="sidebar-spacer"></div>
+	<div class="sidebar-divider"></div>
+	<div class="help-row">
+		<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#8B95A5" stroke-width="1.7"/><path d="M9.6 9.2a2.5 2.5 0 0 1 4.8.8c0 1.6-2.4 2-2.4 3.4" stroke="#8B95A5" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="16.8" r="1" fill="#8B95A5"/></svg>
+		<span>需要帮助？<a href="https://www.niucloud.com/" target="_blank">官方网站</a> · <a href="https://bbs.niucloud.com/" target="_blank">技术论坛</a></span>
+	</div>
+</aside>
+
+<main class="main">
+	<div class="screen">
+		<div class="screen-head" id="ncScreenHead">
+			{block name="head"}{/block}
+		</div>
+		<div class="screen-body" id="ncScreenBody">
+			{block name="main"}{/block}
+		</div>
+		<div class="screen-foot" id="ncScreenFoot">
+			{block name="foot"}{/block}
+		</div>
+	</div>
+</main>
+
+<!-- 通用弹窗 -->
+<div class="modal-mask" id="ncModal">
+	<div class="modal">
+		<div class="modal-head" style="display:flex;align-items:center;gap:12px;">
+			<div class="modal-icon" id="ncModalIcon" style="width:40px;height:40px;flex-shrink:0;"></div>
+			<div class="modal-title" id="ncModalTitle" style="flex:1;">提示</div>
+		</div>
+		<div class="modal-body" id="ncModalBody"></div>
+		<div class="modal-btns">
+			<button type="button" class="btn btn-secondary btn-sm" id="ncModalCancel">取消</button>
+			<button type="button" class="btn btn-primary btn-sm" id="ncModalOk">确定</button>
+		</div>
+	</div>
+</div>
+
+<div class="toast" id="ncToast"></div>
+
+<script>
+	var NC = (function () {
+		var STEPS = [
+			{ title: '许可协议', desc: '阅读并同意软件许可协议' },
+			{ title: '环境检测', desc: 'PHP 扩展与目录权限' },
+			{ title: '参数配置', desc: '数据库与站点信息' },
+			{ title: '安装完成', desc: '获取后台入口链接' }
+		];
+
+		var ICON_WARN = '<svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="22" fill="#FEF3C7"/><path d="M22 12.5l9 16.5H13l9-16.5z" stroke="#F59E0B" stroke-width="2.2" stroke-linejoin="round" fill="none"/><path d="M22 19.6v4.6" stroke="#F59E0B" stroke-width="2.2" stroke-linecap="round"/><circle cx="22" cy="28" r="1.3" fill="#F59E0B"/></svg>';
+		var ICON_ERROR = '<svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="22" fill="#FEE4E2"/><path d="M15.5 15.5l13 13M28.5 15.5l-13 13" stroke="#E5484D" stroke-width="2.6" stroke-linecap="round"/></svg>';
+		var ICON_SUCCESS = '<svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="22" fill="#D1FAE5"/><path d="M14 22.5l5.5 5.5L30 17" stroke="#16A34A" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+
+		/* 渲染左侧步骤 */
+		function renderSteps(current) {
+			var wrap = document.getElementById('ncSteps');
+			if (!wrap) {
+				return;
+			}
+			var html = '';
+			for (var i = 0; i < STEPS.length; i++) {
+				var no = i + 1;
+				var cls = no < current ? 'done' : (no === current ? 'active' : '');
+				html += '<div class="step ' + cls + '">';
+				html += '<div class="step-rail"><div class="step-dot">' + (no < current ? '&#10003;' : no) + '</div>';
+				if (i < STEPS.length - 1) {
+					html += '<div class="step-connector"></div>';
+				}
+				html += '</div>';
+				html += '<div class="step-info"><div class="step-title">' + STEPS[i].title + '</div>';
+				html += '<div class="step-desc">' + STEPS[i].desc + '</div></div>';
+				html += '</div>';
+			}
+			wrap.innerHTML = html;
+		}
+
+		function setStep(current) {
+			renderSteps(current);
+			var body = document.getElementById('ncScreenBody');
+			if (body) {
+				body.scrollTop = 0;
+			}
+		}
+
+		/* 头部/底部固定，中间区域滚动：滚动时给头部加分割阴影 */
+		function bindScroll() {
+			var body = document.getElementById('ncScreenBody');
+			var head = document.getElementById('ncScreenHead');
+			var foot = document.getElementById('ncScreenFoot');
+			if (!body || !head) {
+				return;
+			}
+			body.addEventListener('scroll', function () {
+				head.classList.toggle('is-scrolled', body.scrollTop > 2);
+			});
+			if (foot && foot.innerHTML.trim() === '') {
+				foot.style.display = 'none';
+			}
+		}
+
+		/* toast 轻提示 */
+		var toastTimer = null;
+		function toast(msg) {
+			var el = document.getElementById('ncToast');
+			el.textContent = msg;
+			el.classList.add('show');
+			clearTimeout(toastTimer);
+			toastTimer = setTimeout(function () {
+				el.classList.remove('show');
+			}, 2000);
+		}
+
+		/* 弹窗 */
+		var modalOk = null;
+		var modalCancel = null;
+
+		function closeModal() {
+			document.getElementById('ncModal').classList.remove('show');
+			modalOk = null;
+			modalCancel = null;
+		}
+
+		function modal(options) {
+			options = options || {};
+			var type = options.type || 'alert';
+			var icon = options.icon || (type === 'error' ? ICON_ERROR : (type === 'success' ? ICON_SUCCESS : ICON_WARN));
+			document.getElementById('ncModalIcon').innerHTML = icon;
+			document.getElementById('ncModalTitle').textContent = options.title || '提示';
+			document.getElementById('ncModalBody').innerHTML = options.body || '';
+			var cancel = document.getElementById('ncModalCancel');
+			var ok = document.getElementById('ncModalOk');
+			cancel.style.display = type === 'confirm' ? '' : 'none';
+			cancel.textContent = options.cancelText || '取消';
+			ok.textContent = options.okText || '确定';
+			ok.className = 'btn btn-sm ' + (options.danger ? 'btn-danger' : 'btn-primary');
+			modalOk = options.onOk || null;
+			modalCancel = options.onCancel || null;
+			document.getElementById('ncModal').classList.add('show');
+			ok.focus();
+		}
+
+		function alertbox(title, body, onOk) {
+			modal({ type: 'alert', title: title, body: body, onOk: onOk });
+		}
+
+		function alertError(title, body, onOk) {
+			modal({ type: 'alert', icon: ICON_ERROR, title: title, body: body, onOk: onOk });
+		}
+
+		function confirmbox(title, body, onOk, options) {
+			options = options || {};
+			modal({
+				type: 'confirm',
+				icon: options.icon,
+				danger: options.danger,
+				okText: options.okText,
+				title: title,
+				body: body,
+				onOk: onOk,
+				onCancel: options.onCancel
+			});
+		}
+
+		document.addEventListener('DOMContentLoaded', function () {
+			bindScroll();
+			var mask = document.getElementById('ncModal');
+			mask.addEventListener('click', function (e) {
+				if (e.target === mask) {
+					closeModal();
+				}
+			});
+			document.getElementById('ncModalOk').addEventListener('click', function () {
+				var cb = modalOk;
+				closeModal();
+				if (cb) {
+					cb();
+				}
+			});
+			document.getElementById('ncModalCancel').addEventListener('click', function () {
+				var cb = modalCancel;
+				closeModal();
+				if (cb) {
+					cb();
+				}
+			});
+			document.addEventListener('keydown', function (e) {
+				if (e.key === 'Escape') {
+					closeModal();
+				}
+			});
+		});
+
+		return {
+			setStep: setStep,
+			toast: toast,
+			modal: modal,
+			alert: alertbox,
+			alertError: alertError,
+			confirm: confirmbox,
+			closeModal: closeModal
+		};
+	})();
+
+	/* 兼容旧调用 */
+	function success(message) {
+		NC.alert('提示', message);
+	}
+	function error(message) {
+		NC.alertError('提示', message);
+	}
+</script>
+{block name="script"}{/block}
+</body>
+</html>

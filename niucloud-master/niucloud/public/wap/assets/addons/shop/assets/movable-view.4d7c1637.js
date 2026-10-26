@@ -1,0 +1,2 @@
+const movableArea = "";
+const movableView = "";

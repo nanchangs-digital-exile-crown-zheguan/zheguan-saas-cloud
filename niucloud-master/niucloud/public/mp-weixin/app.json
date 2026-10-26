@@ -1,0 +1,138 @@
+{
+  "pages": [
+    "app/pages/index/index",
+    "app/pages/index/diy",
+    "app/pages/index/diy_form",
+    "app/pages/index/diy_form_result",
+    "app/pages/index/diy_form_detail",
+    "app/pages/index/close",
+    "app/pages/index/nosite",
+    "app/pages/index/develop"
+  ],
+  "subPackages": [
+    {
+      "root": "app/pages/auth",
+      "pages": [
+        "index",
+        "agreement",
+        "bind",
+        "login",
+        "register",
+        "resetpwd"
+      ]
+    },
+    {
+      "root": "app/pages/verify",
+      "pages": [
+        "index",
+        "verify",
+        "detail",
+        "record"
+      ]
+    },
+    {
+      "root": "app/pages/friendspay",
+      "pages": [
+        "share",
+        "money"
+      ]
+    },
+    {
+      "root": "app/pages/setting",
+      "pages": [
+        "index",
+        "authorization"
+      ]
+    },
+    {
+      "root": "app/pages/pay",
+      "pages": [
+        "browser",
+        "result"
+      ]
+    },
+    {
+      "root": "app/pages/weapp",
+      "pages": [
+        "order_shipping"
+      ]
+    },
+    {
+      "root": "app/pages/webview",
+      "pages": [
+        "index"
+      ]
+    },
+    {
+      "root": "app/pages/addon-universal",
+      "pages": [
+        "index"
+      ]
+    },
+    {
+      "root": "app/components",
+      "pages": [
+        "pages/_mp_placeholder"
+      ]
+    },
+    {
+      "root": "app/pages/member",
+      "pages": [
+        "apply_cash_out",
+        "commission",
+        "balance",
+        "level",
+        "detailed_account",
+        "cash_out",
+        "cash_out_detail",
+        "index",
+        "personal",
+        "personal_form",
+        "point",
+        "point_detail",
+        "account",
+        "account_edit",
+        "address",
+        "address_edit",
+        "sign_in",
+        "contact"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#F6F6F6",
+    "backgroundColor": "#F6F6F6",
+    "backgroundColorTop": "#F6F6F6",
+    "backgroundColorBottom": "#F6F6F6"
+  },
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "app/pages/index/index"
+      },
+      {
+        "pagePath": "app/pages/index/nosite"
+      }
+    ]
+  },
+  "resizable": true,
+  "permission": {
+    "scope.userLocation": {
+      "desc": "为了更好地为您提供服务"
+    },
+    "scope.writePhotosAlbum": {
+      "desc": "为了更好地为您提供服务"
+    }
+  },
+  "requiredPrivateInfos": [
+    "chooseLocation",
+    "getLocation",
+    "chooseAddress"
+  ],
+  "__usePrivacyCheck__": true,
+  "usingComponents": {
+    "layout-default-uni": "/layouts/default"
+  }
+}

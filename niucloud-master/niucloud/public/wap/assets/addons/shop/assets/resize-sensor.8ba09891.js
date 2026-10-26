@@ -1,0 +1,2 @@
+const image = "";
+const resizeSensor = "";

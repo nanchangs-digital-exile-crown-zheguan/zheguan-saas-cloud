@@ -1,0 +1,917 @@
+import request from '@/utils/request'
+
+/***************************************************** 系统整体信息 *************************************************/
+
+/**
+ * 系统信息
+ * @returns
+ */
+export function getInfo() {
+    return request.get('sys/role')
+}
+
+/**
+ * 系统信息
+ * @returns
+ */
+export function getUrl() {
+    return request.get('sys/url')
+}
+
+/**
+ * 当前站点已开启渠道及访问地址
+ */
+export function getChannel() {
+    return request.get('sys/visit_channel')
+}
+
+/***************************************************** 用户组 ****************************************************/
+
+/**
+ * 用户组列表
+ * @returns
+ */
+export function getRoleList(params: Record<string, any>) {
+    return request.get('sys/role', { params })
+}
+
+/**
+ * 用户组详情
+ * @param roleId
+ */
+export function getRoleInfo(roleId: number) {
+    return request.get(`sys/role/${ roleId }`)
+}
+
+/**
+ * 添加用户组
+ * @param params
+ * @returns
+ */
+export function addRole(params: Record<string, any>) {
+    return request.post(`sys/role`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 编辑用户组
+ * @param params
+ */
+export function editRole(params: Record<string, any>) {
+    return request.put(`sys/role/${ params.role_id }`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 删除用户组
+ * @param roleId
+ */
+export function deleteRole(roleId: number) {
+    return request.delete(`sys/role/${ roleId }`, { showSuccessMessage: true })
+}
+
+/**
+ * 修改角色状态
+ * @param params
+ */
+export function modifyRoleStatus(params: Record<string, any>) {
+    return request.put(`sys/role/status`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 全部分组
+ * @returns
+ */
+export function allRole() {
+    return request.get('sys/role/all')
+}
+
+/***************************************************** 全部菜单 ****************************************************/
+
+/**
+ * 获取全部菜单
+ * @returns
+ */
+export function getMenus(type: string) {
+    return request.get(`sys/menu/${ type }`)
+}
+
+/**
+ * 获取菜单信息
+ * @param app_type
+ * @param menu_key
+ */
+export function getMenuInfo(app_type: string, menu_key: string) {
+    return request.get(`sys/menu/${ app_type }/info/${ menu_key }`);
+}
+
+/**
+ * 添加菜单
+ * @param params
+ * @returns
+ */
+export function addMenu(params: Record<string, any>) {
+    return request.post('sys/menu', params, { showSuccessMessage: true })
+}
+
+/**
+ * 更新菜单
+ * @param params
+ */
+export function editMenu(params: Record<string, any>) {
+    return request.put(`sys/menu/${ params.app_type }/${ params.menu_key }`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 删除菜单
+ * @param app_type
+ * @param menu_key
+ */
+export function deleteMenu(app_type: string, menu_key: string) {
+    return request.delete(`sys/menu/${ app_type }/${ menu_key }`, { showSuccessMessage: true })
+}
+
+/**
+ * 导出菜单(平台/站点)
+ * @param app_type admin | site
+ * @param addons 导出范围：空数组=全部；[''] 表示仅系统菜单；['', 'shop'] 表示系统菜单+商城
+ * @returns
+ */
+export function exportMenu(app_type: string, addons: string[] = []) {
+    return request.get(`sys/menu/export/${ app_type }`, {
+        params: { addons: JSON.stringify(addons) },
+        responseType: 'blob',
+        showErrorMessage: false
+    })
+}
+
+/**
+ * 导入菜单(平台/站点)
+ * @param app_type admin | site
+ * @param data FormData，包含 file 菜单文件与 overwrite 是否覆盖同名菜单
+ * @returns
+ */
+export function importMenu(app_type: string, data: FormData) {
+    // 必须覆盖默认的 application/json，否则 axios 会把 FormData 转成 JSON 导致文件上传失败
+    return request.post(`sys/menu/import/${ app_type }`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
+}
+
+/**
+ * 获取菜单导入的PHP上传限制配置
+ * @returns
+ */
+export function getMenuImportConfig() {
+    return request.get('sys/menu/import/config', { showErrorMessage: false })
+}
+
+/**
+ * 获取系统菜单
+ *
+ */
+export function getSystemMenu() {
+    return request.get(`sys/menu/system_menu`)
+}
+
+/**
+ * 获取应用菜单
+ *
+ */
+export function getAddonMenu(key: any) {
+    return request.get(`sys/menu/addon_menu/${ key }`)
+}
+
+/**
+ * 获取类型为目录的菜单
+ * @param key
+ */
+export function getMenuByTypeDir(key: any = 'system') {
+    return request.get(`sys/menu/dir/${ key }`)
+}
+
+/***************************************************** 站点菜单 ****************************************************/
+
+/**
+ * 获取站点菜单
+ * @returns
+ */
+export function getSiteMenus() {
+    return request.get(`site/site/menu`)
+}
+
+/***************************************************** 设置 ****************************************************/
+
+/**
+ * 获取网站设置
+ * @returns
+ */
+export function getWebsite() {
+    return request.get('sys/config/website')
+}
+
+/**
+ * 获取网站设置 （未登录状态调用）
+ * @returns
+ */
+export function getWebConfig() {
+    return request.get('sys/web/website')
+}
+
+/**
+ * 获取网站设置
+ * @returns
+ */
+export function getWebCopyright() {
+    return request.get('sys/web/copyright')
+}
+
+/**
+ * 更新网站设置
+ * @param params
+ * @returns
+ */
+export function setWebsite(params: Record<string, any>) {
+    return request.put(`sys/config/website`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 获取版权设置
+ * @returns
+ */
+export function getCopyright() {
+    return request.get('sys/config/copyright')
+}
+
+/**
+ * 获服务信息
+ * @returns
+ */
+export function getService() {
+    return request.get('sys/config/service')
+}
+
+/**
+ * 获取渠道设置
+ * @returns
+ */
+export function getChannelSetting() {
+    return request.get('sys/config/channel')
+}
+
+/**
+ * 设置渠道设置
+ * @param params
+ * @returns
+ */
+export function setChannelSetting(params: Record<string, any>) {
+    return request.put('sys/config/channel', params)
+}
+
+/**
+ * 更新版权设置
+ * @param params
+ * @returns
+ */
+export function setCopyright(params: Record<string, any>) {
+    return request.put(`sys/config/copyright`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 获取附件组列表
+ * @param params
+ * @returns
+ */
+export function getAttachmentCategoryList(params: Record<string, any>) {
+    return request.get(`sys/attachment/category`, { params })
+}
+
+/**
+ * 添加分类
+ * @param params
+ */
+export function addAttachmentCategory(params: Record<string, any>) {
+    return request.post(`sys/attachment/category`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 编辑分类
+ * @param params
+ * @returns
+ */
+export function editAttachmentCategory(params: Record<string, any>) {
+    return request.put(`sys/attachment/category/${ params.id }`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 删除分类
+ * @param id
+ * @returns
+ */
+export function deleteAttachmentCategory(id: number) {
+    return request.delete(`sys/attachment/category/${ id }`, { showSuccessMessage: true })
+}
+
+/**
+ * 获取附件列表
+ * @param params
+ * @returns
+ */
+export function getAttachmentList(params: Record<string, any>) {
+    return request.get(`sys/attachment`, { params })
+}
+
+/**
+ * 删除附件
+ * @param params
+ * @returns
+ */
+export function deleteAttachment(params: Record<string, any>) {
+    return request.delete(`sys/attachment/del`, { data: params, showSuccessMessage: true })
+}
+
+/**
+ * 移动附件
+ * @param params
+ * @returns
+ */
+export function moveAttachment(params: Record<string, any>) {
+    return request.put(`sys/attachment/batchmove`, params)
+}
+
+/**
+ * 获取menu菜单
+ */
+export function getAuthMenu() {
+    return request.get(`auth/site/showmenu`)
+}
+
+/**
+ * 获取evn
+ * @returns
+ */
+export function getEnv() {
+    return request.get(`sys/env`)
+}
+
+/***************************************************** 地址管理 ****************************************************/
+
+/**
+ * 获取下级地址列表
+ * @param pid
+ */
+export function getAreaListByPid(pid: number = 0) {
+    return request.get(`sys/area/list_by_pid/${ pid }`)
+}
+
+/**
+ * 获取地址树列表
+ * @param level
+ */
+export function getAreatree(level: number = 1) {
+    return request.get(`sys/area/tree/${ level }`)
+}
+
+/**
+ * 获取地址信息
+ */
+export function getAddressInfo(params: any) {
+    return request.get(`sys/area/get_info`, { params })
+}
+
+/**
+ * 获取地址信息
+ */
+export function getContraryAddress(params: any) {
+    return request.get(`sys/area/contrary`, { params })
+}
+
+/**
+ * 获取地址
+ * @param code
+ */
+export function getAreaByCode(code: number | string) {
+    return request.get(`sys/area/code/${ code }`)
+}
+
+/***************************************************** 存储设置 ****************************************************/
+
+/**
+ * 获取存储配置列表
+ */
+export function getStorageList() {
+    return request.get(`sys/storage`)
+}
+
+/**
+ * 获取存储详情
+ * @param type
+ */
+export function getStorageInfo(type: string) {
+    return request.get(`sys/storage/${ type }`)
+}
+
+/**
+ * 修改存储
+ * @param params
+ * @returns
+ */
+export function editStorage(params: Record<string, any>) {
+    return request.put(`sys/storage/${ params.storage_type }`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 获取存储配置列表（多套配置）
+ */
+export function getStorageConfigList() {
+    return request.get(`sys/storage/config/list`)
+}
+
+/**
+ * 新增存储配置
+ * @param params
+ * @returns
+ */
+export function addStorageConfig(params: Record<string, any>) {
+    return request.post(`sys/storage/config`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 编辑存储配置
+ * @param id
+ * @param params
+ * @returns
+ */
+export function editStorageConfig(id: number | string, params: Record<string, any>) {
+    return request.put(`sys/storage/config/${ id }`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 启用存储配置
+ * @param id
+ * @returns
+ */
+export function useStorageConfig(id: number | string) {
+    return request.put(`sys/storage/config/use/${ id }`, {}, { showSuccessMessage: true })
+}
+
+/**
+ * 删除存储配置
+ * @param id
+ * @returns
+ */
+export function deleteStorageConfig(id: number | string) {
+    return request.delete(`sys/storage/config/${ id }`, { showSuccessMessage: true })
+}
+
+/***************************************************** 支付设置 ****************************************************/
+
+/**
+ * 获取支付设置
+ * @returns
+ */
+export function getPayConfig(type: string) {
+    return request.get(`pay/config/${ type }`)
+}
+
+/**
+ * 配置支付
+ * @returns
+ */
+export function setPayConfig(params: Record<string, any>) {
+    return request.put(`pay/config/${ params.type }`, params, { showSuccessMessage: true });
+}
+
+/**
+ * 获取支付列表
+ * @returns
+ */
+export function getPayList() {
+    return request.get(`pay/lists`)
+}
+
+/***************************************************** 打款设置 ****************************************************/
+/**
+ * 获取打款设置配置
+ * @param channel
+ */
+export function getTransferInfo(channel: string) {
+    return request.get(`pay/channel/lists/${ channel }`)
+}
+
+/**
+ * 设置打款配置
+ * @param params
+ * @returns
+ */
+export function setTransferInfo(params: Record<string, any>) {
+    return request.post(`pay/channel/set/transfer`, params, { showSuccessMessage: true })
+}
+
+/***************************************************** 定时任务 ****************************************************/
+
+/**
+ * 获取任务列表
+ * @returns
+ */
+export function getCronList(params: any) {
+    return request.get(`sys/schedule/list`, { params })
+}
+
+/**
+ * 任务详情
+ * @returns
+ */
+export function getCronInfo(id: string) {
+    return request.get(`sys/cron/${ id }`);
+}
+
+/**
+ * 任务模版
+ * @returns
+ */
+export function getCronTemplate() {
+    return request.get(`sys/schedule/template`)
+}
+
+/**
+ * 任务间隔
+ * @returns
+ */
+export function getCronDateType() {
+    return request.get(`sys/schedule/datetype`)
+}
+
+/**
+ * 获取星期
+ * @returns
+ */
+export function getWeek() {
+    return request.get(`sys/date/week`)
+}
+
+/**
+ * 添加计划任务
+ * @returns
+ */
+export function addCron(params: Record<string, any>) {
+    return request.post(`sys/schedule`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 编辑任务
+ * @returns
+ */
+export function editCron(params: Record<string, any>) {
+    return request.put(`sys/schedule/${ params.id }`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 删除任务
+ * @returns
+ */
+export function deleteCron(id: string) {
+    return request.delete(`sys/schedule/${ id }`, { showSuccessMessage: true })
+}
+
+/**
+ * 执行任务
+ * @returns
+ */
+export function doCron(params: Record<string, any>) {
+    return request.put(`sys/schedule/do/${ params.id }`, params, {
+        showErrorMessage: true,
+        showSuccessMessage: true
+    })
+}
+
+
+/**
+ * 获取任务日志列表
+ * @returns
+ */
+export function getCronLogList(params: any) {
+    return request.get(`sys/schedule/log/list`, { params })
+}
+
+/**
+ * 删除任务日志
+ * @returns
+ */
+export function deleteCronLog(params: Record<string, any>) {
+    return request.put(`sys/schedule/log/delete`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 清空任务日志
+ * @returns
+ */
+export function clearCronLog(params: Record<string, any>) {
+    return request.put(`sys/schedule/log/clear`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 重置计划任务
+ * @returns
+ */
+export function resetCron() {
+    return request.post(`sys/schedule/reset`, { showSuccessMessage: true })
+}
+
+/***************************************************** 协议管理 ****************************************************/
+
+/**
+ * 获取协议列表
+ * @returns
+ */
+export function getAgreementList() {
+    return request.get(`sys/agreement`)
+}
+
+/**
+ * 协议详情
+ * @returns
+ */
+export function getAgreementInfo(key: string) {
+    return request.get(`sys/agreement/${ key }`);
+}
+
+/**
+ * 更新协议
+ * @returns
+ */
+export function editAgreement(params: Record<string, any>) {
+    return request.put(`sys/agreement/${ params.key }`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 协议详情
+ * @returns
+ */
+export function getChannelType() {
+    return request.get(`sys/channel`);
+}
+
+/**
+ * 获取渠道域名
+ * @returns
+ */
+export function getSceneDomain() {
+    return request.get(`sys/scene_domain`);
+}
+
+/***************************************************** 登录注册配置 ****************************************************/
+
+/**
+ * 管理端登录注册配置
+ */
+export function getConfigLogin() {
+    return request.get(`sys/config/login`)
+}
+
+/**
+ * 设置管理端登录注册配置
+ * @param params
+ * @returns
+ */
+export function setConfigLogin(params: Record<string, any>) {
+    return request.put(`sys/config/login`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 获取支付设置
+ */
+export function getPayConfigList() {
+    return request.get(`pay/channel/lists`)
+}
+
+/**
+ * 设置支付配置
+ */
+export function setPatConfig(params: Record<string, any>) {
+    return request.post(`pay/channel/set/all`, params, { showSuccessMessage: true })
+}
+
+/***************************************************** 刷新菜单 ****************************************************/
+/**
+ * 刷新菜单
+ */
+export function menuRefresh() {
+    return request.post(`sys/menu/refresh`, {}, { showSuccessMessage: true })
+}
+
+/**
+ * 清理数据字段缓存
+ */
+export function clearSchemaCache() {
+    return request.post(`sys/schema/clear`, {}, { showSuccessMessage: true })
+}
+
+/**
+ * 清理缓存
+ */
+export function clearCache() {
+    return request.post(`sys/cache/clear`, {}, { showSuccessMessage: true })
+}
+
+/***************************************************** 获取应用 ****************************************************/
+/**
+ * 获取应用
+ */
+export function getAppMange() {
+    return request.get(`sys/applist`)
+}
+
+/***************************************************** 地图设置 ****************************************************/
+
+/**
+ * 设置地图key
+ */
+export function setMap(params: Record<string, any>) {
+    return request.put(`sys/config/map`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 获取地图配置
+ */
+export function getMap(params: Record<string, any>) {
+    return request.get(`sys/config/map`, { params })
+}
+
+/**
+ * 获取支付待审核记录
+ */
+export function getPayAuditList(params: Record<string, any>) {
+    return request.get('pay/audit', { params })
+}
+
+/**
+ * 支付审核通过
+ * @returns
+ */
+export function payAuditPass(outTradeNo: string) {
+    return request.put(`pay/pass/${ outTradeNo }`, {}, { showSuccessMessage: true })
+}
+
+/**
+ * 支付审核拒绝
+ * @returns
+ */
+export function payAuditRefuse(params: Record<string, any>) {
+    return request.put(`pay/refuse/${ params.out_trade_no }`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 获取支付单据详情
+ */
+export function getPayDetail(id: number) {
+    return request.get(`pay/detail/${ id }`)
+}
+
+/**
+ * 获取应用列表
+ */
+export function getAddonList() {
+    return request.get(`app/getAddonList`)
+}
+
+/**
+ * 获取开发者key
+ * @returns
+ */
+export function getDeveloperToken() {
+    return request.get('sys/config/developer_token')
+}
+
+/**
+ * 设置开发者key
+ * @param params
+ * @returns
+ */
+export function setDeveloperToken(params: Record<string, any>) {
+    return request.put(`sys/config/developer_token`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 获取布局设置
+ * @returns
+ */
+export function getWebsiteLayout() {
+    return request.get('sys/web/layout')
+}
+
+/**
+ * 获取布局设置
+ * @returns
+ */
+export function getLayout() {
+    return request.get('sys/config/layout')
+}
+
+/**
+ * 更新布局设置
+ * @param params
+ * @returns
+ */
+export function setLayout(params: Record<string, any>) {
+    return request.put(`sys/config/layout`, params, { showSuccessMessage: true })
+}
+
+/**
+ * 获取色调设置
+ * @returns
+ */
+export function getThemecolor() {
+    return request.get('sys/config/themecolor')
+}
+
+/**
+ * 更新色调设置
+ * @param params
+ * @returns
+ */
+export function setThemecolor(params: Record<string, any>) {
+    return request.put(`sys/config/themecolor`, params)
+}
+
+/***************************************************** 报表导出 ****************************************************/
+
+/**
+ * 获取报表导出列表
+ * @returns
+ */
+export function getExportList(params: Record<string, any>) {
+    return request.get(`sys/export`, { params })
+}
+
+/**
+ * 获取报表导出状态列表
+ * @returns
+ */
+export function getExportStatusList() {
+    return request.get('sys/export/status')
+}
+
+/**
+ * 获取报表导出类型
+ * @returns
+ */
+export function getExportKeyList() {
+    return request.get('sys/export/type')
+}
+
+/**
+ * 报表导出
+ * @returns
+ */
+export function exportData(type: string, params: Record<string, any>) {
+    return request.get(`sys/export/${ type }`, { params })
+}
+
+/**
+ * 报表导出数据检查
+ * @returns
+ */
+export function exportDataCheck(type: string, params: Record<string, any>) {
+    return request.get(`sys/export/check/${ type }`, { params })
+}
+
+/**
+ * 报表删除
+ * @param id
+ */
+export function deleteExport(id: number) {
+    return request.delete(`sys/export/${ id }`, { showSuccessMessage: true })
+}
+
+/**
+ * 获取网站开放平台设置
+ * @returns
+ */
+export function getWxoplatform() {
+    return request.get('sys/wxoplatform/config')
+}
+
+/**
+ * 获取二维码
+ * @returns
+ */
+export function getQrcode(params: Record<string, any>) {
+    return request.get(`sys/qrcode`, { params, showErrorMessage: false })
+}
+
+/**
+ * 校验消息队列
+ * @returns
+ */
+export function checkJobStatus() {
+    return request.get(`sys/job`)
+}
+
+/**
+ * 平台端队列检测提醒
+ * 平台端后台访问时调用：后端检测队列未运行会发送站内信，恢复后发送「已恢复」
+ * 站点端不调用（后端也会按 site_id 二次拦截）
+ * @returns
+ */
+export function checkQueueNotice() {
+    return request.get(`sys/queue_notice`, { showErrorMessage: false })
+}

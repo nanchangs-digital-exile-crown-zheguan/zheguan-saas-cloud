@@ -1,0 +1,90 @@
+import { ElButton as y, ElDialog as v } from "element-plus/es";
+import { defineComponent as k, ref as C, computed as V, openBlock as E, createBlock as B, unref as a, isRef as D, withCtx as r, createElementVNode as u, createVNode as f, createTextVNode as d, toDisplayString as c } from "vue";
+import { t as s } from "/admin/assets/shared/admin-lang.js";
+import { exportDataCheck as P, exportData as N } from "/admin/assets/shared/core-shared.js";
+import { useRouter as T } from "vue-router";
+import { ElMessage as b } from "element-plus";
+const R = { class: "dialog-footer" }, q = /* @__PURE__ */ k({
+  __name: "index",
+  props: {
+    show: {
+      type: Boolean,
+      default: !1
+    },
+    type: {
+      type: String,
+      default: ""
+    },
+    searchParam: {
+      type: Object,
+      default: () => ({})
+    }
+  },
+  emits: ["update:show", "close"],
+  setup(m, { emit: n }) {
+    const e = m, t = C(!1), p = V({
+      get() {
+        return e.show;
+      },
+      set(l) {
+        n("update:show", l);
+      }
+    }), h = T(), _ = () => {
+      t.value = !0;
+      const l = h.resolve({
+        path: "/site/setting/export"
+      });
+      P(e.type, { page: 1, limit: 1, ...e.searchParam }).then((o) => {
+        o.data ? N(e.type, e.searchParam).then(() => {
+          t.value = !1, n("close", !1), setTimeout(() => {
+            window.open(l.href);
+          }, 100);
+        }) : (t.value = !1, b.error(o.msg));
+      }).catch(() => {
+        t.value = !1;
+      });
+    }, g = () => {
+      n("close", !1);
+    };
+    return (l, o) => {
+      const i = y, x = v;
+      return E(), B(x, {
+        modelValue: a(p),
+        "onUpdate:modelValue": o[0] || (o[0] = (w) => D(p) ? p.value = w : null),
+        title: a(s)("exportTip"),
+        width: "300px",
+        "close-on-click-modal": !0,
+        "close-on-press-escape": !1,
+        "show-close": !1
+      }, {
+        footer: r(() => [
+          u("span", R, [
+            f(i, { onClick: g }, {
+              default: r(() => [
+                d(c(a(s)("cancel")), 1)
+              ]),
+              _: 1
+            }),
+            f(i, {
+              type: "primary",
+              onClick: _,
+              loading: t.value
+            }, {
+              default: r(() => [
+                d(c(a(s)("exportConfirm")), 1)
+              ]),
+              _: 1
+            }, 8, ["loading"])
+          ])
+        ]),
+        default: r(() => [
+          u("span", null, c(a(s)("exportPlaceholder")), 1)
+        ]),
+        _: 1
+      }, 8, ["modelValue", "title"]);
+    };
+  }
+});
+export {
+  q as _
+};

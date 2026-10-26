@@ -1,0 +1,1 @@
+<view><u-loading-page wx:if="{{a}}" u-i="24012c88-0" bind:__l="__l" u-p="{{a}}"></u-loading-page></view>

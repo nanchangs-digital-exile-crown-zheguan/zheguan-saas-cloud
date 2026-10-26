@@ -1,0 +1,194 @@
+import { ElInput as G, ElIcon as H, ElSwitch as J, ElButton as K, ElCard as O, ElLoadingDirective as Q } from "element-plus/es";
+import { defineComponent as W, ref as m, onMounted as X, resolveComponent as Y, resolveDirective as Z, withDirectives as R, openBlock as a, createElementBlock as p, createVNode as o, withCtx as l, createElementVNode as u, toDisplayString as i, unref as d, Fragment as S, renderList as ee, createBlock as $, createTextVNode as y, createCommentVNode as h, nextTick as B, toRaw as te, pushScopeId as oe, popScopeId as le } from "vue";
+import { t as k } from "/admin/assets/shared/admin-lang.js";
+import { S as ne } from "./sortable.esm-fc069a97.js";
+import { f as ae, h as se } from "./delivery-da6bd7ad.js";
+import { useRoute as re, useRouter as ie } from "vue-router";
+import { _ as ue } from "./_plugin-vue_export-helper-dad06003.js";
+import "/admin/assets/shared/core-shared.js";
+const ce = (g) => (oe("data-v-91f4cff5"), g = g(), le(), g), pe = { class: "main-container" }, de = { class: "flex justify-between items-center mb-[20px]" }, ve = { class: "text-page-title" }, fe = { class: "flex items-center justify-between" }, _e = { class: "flex items-center" }, me = /* @__PURE__ */ ce(() => /* @__PURE__ */ u("i", { class: "iconfont icontuodong vues-rank mr-[5px]" }, null, -1)), ye = {
+  key: 1,
+  class: "font-600 text-[14px]"
+}, ke = { class: "flex items-center justify-between" }, xe = { class: "text-[#666666] text-[14px]" }, ge = /* @__PURE__ */ W({
+  __name: "config",
+  setup(g) {
+    const N = re(), L = ie(), j = N.meta.title, x = m(!1), s = m([]), T = () => {
+      x.value = !0, ae().then((n) => {
+        s.value = n.data, x.value = !1, B(() => {
+          C && C();
+        });
+      }).catch(() => {
+        x.value = !1;
+      });
+    };
+    X(() => {
+      T();
+    });
+    const V = m(0), E = m(), C = () => {
+      ne.create(E.value, {
+        handle: ".vues-rank",
+        animation: 300,
+        onEnd({ newIndex: n, oldIndex: e }) {
+          const b = s.value.splice(e, 1)[0];
+          s.value.splice(n, 0, b), V.value += 1, B(() => {
+            C();
+          }), w();
+        }
+      });
+    }, v = m(null), c = m(""), U = (n) => {
+      v.value = n, c.value = te(s.value[n].name);
+    }, F = () => {
+      if (c.value == "" || s.value[v.value].name === c.value)
+        return v.value = null, c.value = "", !1;
+      s.value[v.value].name = c.value, v.value = null, w();
+    }, w = () => {
+      se({
+        value: s.value
+      });
+    }, f = (n) => {
+      L.push({ path: n });
+    };
+    return (n, e) => {
+      const b = G, M = Y("EditPen"), P = H, q = J, _ = K, D = O, z = Z("focus"), A = Q;
+      return R((a(), p("div", pe, [
+        o(D, {
+          class: "box-card !border-none",
+          shadow: "never"
+        }, {
+          default: l(() => [
+            u("div", de, [
+              u("span", ve, i(d(j)), 1)
+            ]),
+            x.value ? h("", !0) : (a(), p("div", {
+              ref_key: "tableRef",
+              ref: E,
+              key: V.value
+            }, [
+              (a(!0), p(S, null, ee(s.value, (r, I) => (a(), p("div", {
+                key: r.key,
+                class: "mb-[20px] bg-[#fff]"
+              }, [
+                o(D, { shadow: "never" }, {
+                  header: l(() => [
+                    u("div", fe, [
+                      u("div", _e, [
+                        me,
+                        I === v.value ? R((a(), $(b, {
+                          key: 0,
+                          modelValue: c.value,
+                          "onUpdate:modelValue": e[0] || (e[0] = (t) => c.value = t),
+                          modelModifiers: { trim: !0 },
+                          class: "w-[120px]",
+                          maxlength: "10",
+                          onBlur: F
+                        }, null, 8, ["modelValue"])), [
+                          [z]
+                        ]) : (a(), p("span", ye, i(r.name), 1)),
+                        o(P, {
+                          class: "text-color ml-[10px] cursor-pointer",
+                          onClick: (t) => U(I)
+                        }, {
+                          default: l(() => [
+                            o(M)
+                          ]),
+                          _: 2
+                        }, 1032, ["onClick"])
+                      ]),
+                      o(q, {
+                        modelValue: r.status,
+                        "onUpdate:modelValue": (t) => r.status = t,
+                        "active-value": 1,
+                        "inactive-value": 2,
+                        onChange: w
+                      }, null, 8, ["modelValue", "onUpdate:modelValue"])
+                    ])
+                  ]),
+                  default: l(() => [
+                    u("div", ke, [
+                      u("span", xe, i(d(k)(r.key)), 1),
+                      u("div", null, [
+                        r.key === "local_delivery" ? (a(), p(S, { key: 0 }, [
+                          o(_, {
+                            type: "primary",
+                            link: "",
+                            onClick: e[1] || (e[1] = (t) => f("/shop/delivery/local_config"))
+                          }, {
+                            default: l(() => [
+                              y("基础配置")
+                            ]),
+                            _: 1
+                          }),
+                          o(_, {
+                            type: "primary",
+                            link: "",
+                            onClick: e[2] || (e[2] = (t) => f("/shop/delivery/local"))
+                          }, {
+                            default: l(() => [
+                              y(i(d(k)("localConfig")), 1)
+                            ]),
+                            _: 1
+                          })
+                        ], 64)) : h("", !0),
+                        r.key === "express" ? (a(), p(S, { key: 1 }, [
+                          o(_, {
+                            type: "primary",
+                            link: "",
+                            onClick: e[3] || (e[3] = (t) => f("/shop/delivery/company"))
+                          }, {
+                            default: l(() => [
+                              y(i(d(k)("deliveryCompany")), 1)
+                            ]),
+                            _: 1
+                          }),
+                          o(_, {
+                            type: "primary",
+                            link: "",
+                            onClick: e[4] || (e[4] = (t) => f("/shop/shipping/template"))
+                          }, {
+                            default: l(() => [
+                              y(i(d(k)("deliveryTemplate")), 1)
+                            ]),
+                            _: 1
+                          }),
+                          o(_, {
+                            type: "primary",
+                            link: "",
+                            onClick: e[5] || (e[5] = (t) => f("/shop/delivery/search"))
+                          }, {
+                            default: l(() => [
+                              y(i(d(k)("deliverySearch")), 1)
+                            ]),
+                            _: 1
+                          })
+                        ], 64)) : h("", !0),
+                        r.key === "store" ? (a(), $(_, {
+                          key: 2,
+                          type: "primary",
+                          link: "",
+                          onClick: e[6] || (e[6] = (t) => f("/shop/delivery_store"))
+                        }, {
+                          default: l(() => [
+                            y(i(d(k)("deliveryStore")), 1)
+                          ]),
+                          _: 1
+                        })) : h("", !0)
+                      ])
+                    ])
+                  ]),
+                  _: 2
+                }, 1024)
+              ]))), 128))
+            ]))
+          ]),
+          _: 1
+        })
+      ])), [
+        [A, x.value]
+      ]);
+    };
+  }
+});
+const Ie = /* @__PURE__ */ ue(ge, [["__scopeId", "data-v-91f4cff5"]]);
+export {
+  Ie as default
+};

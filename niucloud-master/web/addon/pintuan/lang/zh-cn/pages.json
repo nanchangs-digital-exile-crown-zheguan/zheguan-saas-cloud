@@ -1,0 +1,9 @@
+{
+    "pages": {
+        "pintuan": {
+            "hello_world": {
+                "index": "hello_world"
+            }
+        }
+    }
+}

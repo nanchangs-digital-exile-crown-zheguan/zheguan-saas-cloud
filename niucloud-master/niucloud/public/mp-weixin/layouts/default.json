@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "ns-toast": "../components/ns-toast/ns-toast"
+  }
+}

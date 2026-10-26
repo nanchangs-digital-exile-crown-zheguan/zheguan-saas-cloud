@@ -1,0 +1,15 @@
+{
+    "keys": [
+        "shop"
+    ],
+    "manifests": {
+        "shop": {
+            "key": "shop",
+            "version": "1.0.0",
+            "sharedVersion": "wap-core-1.0.0",
+            "entry": "././index-4d7b7f96.js",
+            "localeBase": "./locale/"
+        }
+    },
+    "generatedAt": 1792648480
+}

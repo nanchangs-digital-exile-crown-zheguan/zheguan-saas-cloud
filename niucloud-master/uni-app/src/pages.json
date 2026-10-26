@@ -1,0 +1,745 @@
+{
+    "pages": [
+        // pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+        {
+            "path": "app/pages/index/index",
+            "style": {
+                // #ifndef H5
+                "navigationStyle": "custom",
+                // #endif
+                "navigationBarTitleText": "%pages.index.index%",
+                "usingComponents": {
+                    "diy-group": "../../../../addon/components/diy/group/index"
+                },
+                "componentPlaceholder": {
+                    "diy-group": "view"
+                }
+            }
+        },
+        {
+            "path": "app/pages/index/diy",
+            "style": {
+                // #ifndef H5
+                "navigationStyle": "custom",
+                // #endif
+                "navigationBarTitleText": "%pages.index.diy%",
+                "usingComponents": {
+                    "diy-group": "../../../../addon/components/diy/group/index"
+                },
+                "componentPlaceholder": {
+                    "diy-group": "view"
+                }
+            }
+        },
+        {
+            "path": "app/pages/index/diy_form",
+            "style": {
+                // #ifndef H5
+                "navigationStyle": "custom",
+                // #endif
+                "navigationBarTitleText": "%pages.index.diy_form%",
+                "usingComponents": {
+                    "diy-group": "../../../../addon/components/diy/group/index"
+                },
+                "componentPlaceholder": {
+                    "diy-group": "view"
+                }
+            }
+        },
+        {
+            "path": "app/pages/index/diy_form_result",
+            "style": {
+                // #ifndef H5
+                "navigationStyle": "custom",
+                // #endif
+                "navigationBarTitleText": "%pages.index.diy_form_result%"
+            },
+            "needLogin": true
+        },
+        {
+            "path": "app/pages/index/diy_form_detail",
+            "style": {
+                "navigationBarTitleText": "%pages.index.diy_form_detail%"
+            },
+            "needLogin": true
+        },
+        {
+            "path": "app/pages/index/close",
+            "style": {
+                "navigationBarTitleText": "%pages.index.close%"
+            }
+        },
+        {
+            "path": "app/pages/index/nosite",
+            "style": {
+                "navigationBarTitleText": "%pages.index.nosite%"
+            }
+        },
+        {
+            "path": "app/pages/index/develop",
+            "style": {
+                "navigationBarTitleText": "%pages.index.develop%"
+            }
+        }
+    ],
+    "subPackages": [
+        // {{ PAGE_BEGAIN }}
+        // SHOP_PAGE_BEGIN
+        {
+            "root": "addon/shop",
+            "pages": [
+                // *********************************** 商城 ***********************************
+                {
+                    "path": "pages/index",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%shop.pages.index%"
+                    }
+                },
+                {
+                    "path": "pages/coupon/list",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%shop.pages.coupon.list%"
+                    }
+                },
+                {
+                    "path": "pages/coupon/detail",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%shop.pages.coupon.detail%"
+                    }
+                },
+                {
+                    "path": "pages/discount/list",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%shop.pages.discount.list%"
+                    }
+                },
+                {
+                    "path": "pages/evaluate/list",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.evaluate.list%"
+                    }
+                },
+                {
+                    "path": "pages/evaluate/order_evaluate",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.evaluate.order_evaluate%"
+                    }
+                },
+                {
+                    "path": "pages/evaluate/order_evaluate_view",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.evaluate.order_evaluate_view%"
+                    }
+                },
+                {
+                    "path": "pages/member/my_coupon",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.member.my_coupon%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "pages/member/index",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%shop.pages.member.index%"
+                    }
+                },
+                {
+                    "path": "pages/goods/search",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.goods.search%"
+                    }
+                },
+                {
+                    "path": "pages/goods/list",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.goods.list%"
+                    }
+                },
+                {
+                    "path": "pages/goods/rank",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%shop.pages.goods.rank%"
+                    }
+                },
+                {
+                    "path": "pages/newcomer/list",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%shop.pages.newcomer.list%"
+                    }
+                },
+                {
+                    "path": "pages/goods/detail",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.goods.detail%",
+                        "navigationStyle": "custom"
+                    }
+                },
+                {
+                    "path": "pages/goods/cart",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%shop.pages.goods.cart%"
+                    }
+                },
+                {
+                    "path": "pages/goods/collect",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.goods.collect%"
+                    },
+					"needLogin": true
+                },
+                {
+                    "path": "pages/goods/browse",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.goods.browse%"
+                    },
+					"needLogin": true
+                },
+                {
+                    "path": "pages/goods/category",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%shop.pages.goods.category%"
+                    }
+                },
+                {
+                    "path": "pages/order/detail",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%shop.pages.order.detail%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "pages/order/list",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%shop.pages.order.list%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "pages/order/payment",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%shop.pages.order.payment%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "pages/refund/apply",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.refund.apply%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "pages/refund/edit_apply",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.refund.edit_apply%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "pages/refund/list",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.refund.list%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "pages/refund/detail",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%shop.pages.refund.detail%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "pages/refund/log",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.refund.log%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "pages/point/index",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%shop.pages.point.index%"
+                    }
+                },
+                {
+                    "path": "pages/point/list",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.point.list%"
+                    }
+                },
+                {
+                    "path": "pages/point/detail",
+                    "style": {
+                        "navigationStyle": "custom",
+                        "navigationBarTitleText": "%shop.pages.point.detail%"
+                    }
+                },
+                {
+                    "path": "pages/point/payment",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%shop.pages.point.payment%"
+                    }
+                },
+                {
+                    "path": "pages/point/order_list",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.point.order_list%"
+                    }
+                },
+                {
+                    "path": "pages/invoice/list",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.invoice.list%"
+                    }
+                },
+                {
+                    "path": "pages/invoice/detail",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.invoice.detail%"
+                    }
+                },
+                {
+                    "path": "pages/invoice/invoice",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.invoice.invoice%"
+                    }
+                },
+                {
+                    "path": "pages/invoice/invoice_edit",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.invoice.invoice_edit%"
+                    }
+                },
+                {
+                    "path": "pages/invoice/invoice_order",
+                    "style": {
+                        "navigationBarTitleText": "%shop.pages.invoice.invoice_order%"
+                    }
+                }
+            ]
+        },
+        // SHOP_PAGE_END
+// {{ PAGE_END }}
+        // ===== 主包瘦身：主包只保留 tabBar 页面（app/pages/index），其余业务页面下沉为分包 =====
+        {
+            "root": "app/pages/auth",
+            "pages": [
+                {
+                    "path": "index",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%pages.auth.index%"
+                    }
+                },
+                {
+                    "path": "agreement",
+                    "style": {
+                        "navigationBarTitleText": "%pages.auth.agreement%"
+                    }
+                },
+                {
+                    "path": "bind",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%pages.auth.bind%"
+                    }
+                },
+                {
+                    "path": "login",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%pages.auth.login%"
+                    }
+                },
+                {
+                    "path": "register",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%pages.auth.register%"
+                    }
+                },
+                {
+                    "path": "resetpwd",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%pages.auth.resetpwd%"
+                    }
+                }
+            ]
+        },
+        {
+            "root": "app/pages/verify",
+            "pages": [
+                {
+                    "path": "index",
+                    "style": {
+                        "navigationBarTitleText": "%pages.verify.index%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "verify",
+                    "style": {
+                        "navigationBarTitleText": "%pages.verify.verify%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "detail",
+                    "style": {
+                        "navigationBarTitleText": "%pages.verify.detail%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "record",
+                    "style": {
+                        "navigationBarTitleText": "%pages.verify.record%"
+                    },
+                    "needLogin": true
+                }
+            ]
+        },
+        {
+            "root": "app/pages/friendspay",
+            "pages": [
+                {
+                    "path": "share",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%pages.friendspay.share%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "money",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%pages.friendspay.money%"
+                    }
+                }
+            ]
+        },
+        {
+            "root": "app/pages/setting",
+            "pages": [
+                {
+                    "path": "index",
+                    "style": {
+                        "navigationBarTitleText": "%pages.setting.index%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "authorization",
+                    "style": {
+                        "navigationBarTitleText": "%pages.setting.authorization%"
+                    },
+                    "needLogin": true
+                }
+            ]
+        },
+        {
+            "root": "app/pages/pay",
+            "pages": [
+                {
+                    "path": "browser",
+                    "style": {
+                        "navigationBarTitleText": "%pages.pay.browser%"
+                    }
+                },
+                {
+                    "path": "result",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%pages.pay.result%"
+                    }
+                }
+            ]
+        },
+        {
+            "root": "app/pages/weapp",
+            "pages": [
+                {
+                    "path": "order_shipping",
+                    "style": {
+                        "navigationBarTitleText": "%pages.weapp.order_shipping%"
+                    }
+                }
+            ]
+        },
+        {
+            "root": "app/pages/webview",
+            "pages": [
+                {
+                    "path": "index",
+                    "style": {
+                        "navigationBarTitleText": "%pages.webview.index%"
+                    }
+                }
+            ]
+        },
+        {
+            "root": "app/pages/addon-universal",
+            "pages": [
+                {
+                    "path": "index",
+                    "style": {
+                        "navigationBarTitleText": ""
+                    }
+                }
+            ]
+        },
+        {
+            "root": "app/components",
+            "pages": []
+        },
+        {
+            "root": "app/pages/member",
+            "pages": [
+                {
+                    "path": "apply_cash_out",
+                    "style": {
+                        "navigationBarTitleText": "%pages.member.apply_cash_out%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "commission",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%pages.member.commission%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "balance",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%pages.member.balance%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "level",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%pages.member.level%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "detailed_account",
+                    "style": {
+                        "navigationBarTitleText": "%pages.member.detailed_account%"
+                    }
+                },
+                {
+                    "path": "cash_out",
+                    "style": {
+                        "navigationBarTitleText": "%pages.member.cash_out%"
+                    }
+                },
+                {
+                    "path": "cash_out_detail",
+                    "style": {
+                        "navigationBarTitleText": "%pages.member.cash_out_detail%"
+                    }
+                },
+                {
+                    "path": "index",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%pages.member.index%",
+                        "usingComponents": {
+                            "diy-group": "../../../../addon/components/diy/group/index"
+                        },
+                        "componentPlaceholder": {
+                            "diy-group": "view"
+                        }
+                    }
+                },
+                {
+                    "path": "personal",
+                    "style": {
+                        "navigationBarTitleText": "%pages.member.personal%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "personal_form",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%pages.member.personal_form%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "point",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%pages.member.point%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "point_detail",
+                    "style": {
+                        "navigationBarTitleText": "%pages.member.point_detail%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "account",
+                    "style": {
+                        "navigationBarTitleText": "%pages.member.account%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "account_edit",
+                    "style": {
+                        "navigationBarTitleText": "%pages.member.account_edit%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "address",
+                    "style": {
+                        "navigationBarTitleText": "%pages.member.address%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "address_edit",
+                    "style": {
+                        "navigationBarTitleText": "%pages.member.address_edit%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "sign_in",
+                    "style": {
+                        // #ifndef H5
+                        "navigationStyle": "custom",
+                        // #endif
+                        "navigationBarTitleText": "%pages.member.sign_in%"
+                    },
+                    "needLogin": true
+                },
+                {
+                    "path": "contact",
+                    "style": {
+                        "navigationBarTitleText": "%pages.member.contact%"
+                    }
+                }
+            ]
+        }
+    ],
+    "globalStyle": {
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "",
+        "navigationBarBackgroundColor": "#F6F6F6",
+        "backgroundColor": "#F6F6F6",
+        "backgroundColorTop": "#F6F6F6",
+        "backgroundColorBottom": "#F6F6F6"
+    },
+    "tabBar": {
+        "list": [{
+                "pagePath": "app/pages/index/index"
+            },
+            {
+                "pagePath": "app/pages/index/nosite"
+            }
+        ]
+    },
+    "easycom": {
+        "custom": {
+            "addon-page-bridge": "@/components/addon-page-bridge/addon-page-bridge.vue",
+            "addon-diy-bridge": "@/components/addon-diy-bridge/addon-diy-bridge.vue",
+            "diy-dynamic-bridge": "@/components/diy-dynamic-bridge/diy-dynamic-bridge.vue",
+            "diy-dynamic-bridge-app": "@/components/diy-dynamic-bridge-app/diy-dynamic-bridge-app.vue",
+            "diy-group": "@/addon/components/diy/group/index.vue",
+            "ns-toast": "@/components/ns-toast/ns-toast.vue",
+            "u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
+            "up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+            "u-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+            "diy-(.*)": "@/app/components/diy/$1/index.vue"
+        }
+    }
+}

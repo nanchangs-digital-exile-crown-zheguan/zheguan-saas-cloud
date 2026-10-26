@@ -1,0 +1,15 @@
+{
+    "keys": [
+        "shop"
+    ],
+    "manifests": {
+        "shop": {
+            "key": "shop",
+            "version": "1.0.0",
+            "sharedVersion": "admin-core-1.0.0",
+            "entry": "././index-1991ce8c.js",
+            "langBase": "./lang/"
+        }
+    },
+    "generatedAt": 1792648480
+}

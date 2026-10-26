@@ -1,0 +1,236 @@
+<?php
+// +----------------------------------------------------------------------
+// | Niucloud-admin 企业快速开发的saas管理平台
+// +----------------------------------------------------------------------
+// | 官方网址：https://www.niucloud.com
+// +----------------------------------------------------------------------
+// | niucloud团队 版权所有 开源版本可自由商用
+// +----------------------------------------------------------------------
+// | Author: Niucloud Team
+// +----------------------------------------------------------------------
+
+namespace app\service\core\site;
+
+use app\dict\addon\AddonDict;
+use app\dict\site\SiteDict;
+use app\dict\sys\AppTypeDict;
+use app\model\addon\Addon;
+use app\model\site\Site;
+use app\model\site\SiteGroup;
+use app\model\sys\SysUserRole;
+use core\base\BaseCoreService;
+use core\exception\CommonException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
+use think\facade\Cache;
+use think\facade\Db;
+use think\Model;
+
+/**
+ * 站点服务层
+ * Class Site
+ * @package app\service\admin\site
+ */
+class CoreSiteService extends BaseCoreService
+{
+    public static $cache_tag_name = 'site_cash';
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->model = new Site();
+    }
+
+    /**
+     * 获取授权当前站点信息(用做缓存)
+     * @param $site_id
+     * @return mixed|string
+     */
+    public function getSiteCache($site_id)
+    {
+        $cache_name = 'site_info_cache';
+        return cache_remember(
+            $cache_name . $site_id,
+            function() use ($site_id) {
+                $where = [
+                    [ 'site_id', '=', $site_id ],
+                ];
+                $info = $this->model->where($where)->field('site_id, site_name, front_end_name, front_end_logo,front_end_icon, app_type, keywords, logo, icon, `desc`, status, latitude, longitude, province_id, city_id, district_id, address, full_address, phone, business_hours, create_time, expire_time, group_id, app, addons, site_domain, meta_title, meta_desc, meta_keyword')->append([ 'status_name' ])->findOrEmpty()->toArray();
+                if (!empty($info)) {
+                    if($site_id == 0){
+                        $info['icon'] = !empty($info['icon']) ? $info['icon'] : 'static/resource/images/site/icon.jpg';
+                        $info['logo'] = !empty($info['logo']) ? $info['logo'] : 'static/resource/images/site/logo.png'; 
+                    }else {
+                        if (empty($info['logo']) || empty($info['icon'])){
+                            $admin_site_info = $this->model->where($where)->field('logo, icon')->findOrEmpty()->toArray();
+                            $info['icon'] = empty($info['icon']) ? $admin_site_info['icon'] : $info['icon'];
+                            $info['logo'] = empty($info['logo']) ? $admin_site_info['logo'] : $info['logo'];
+                        }
+                    }
+                    $site_addons = ( new CoreSiteService() )->getAddonKeysBySiteId((int) $site_id);
+                    $info[ 'apps' ] = ( new Addon() )->where([ [ 'key', 'in', $site_addons ], [ 'type', '=', AddonDict::APP ] ])->field('key,title,desc,icon,type,support_app')->select()->toArray();
+                    $info[ 'site_addons' ] = ( new Addon() )->where([ [ 'key', 'in', $site_addons ], [ 'type', '=', AddonDict::ADDON ] ])->field('key,title,desc,icon,type,support_app')->select()->toArray();
+                }
+                return $info;
+            },
+            self::$cache_tag_name . $site_id
+        );
+    }
+
+    /**
+     * 根据域名获取站点id
+     * @param string $domain
+     * @return mixed|string
+     */
+    public function getSiteIdByDomain(string $domain)
+    {
+        if (empty($domain)) return;
+
+        $cache_name = 'site_domain';
+        return cache_remember(
+            $cache_name . $domain,
+            function() use ($domain) {
+                return $this->model->where([ [ 'site_domain', '=', $domain ] ])->value('site_id');
+            },
+            self::$cache_tag_name
+        );
+    }
+
+    /**
+     * 模型实例
+     * @param $site_id
+     * @return Site|array|mixed|Model
+     */
+    public function find($site_id)
+    {
+        return $this->model->findOrEmpty($site_id);
+    }
+
+    /**
+     * 获取过期的站点
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     */
+    public function getExpireSiteList()
+    {
+        return $this->model->where([
+            [ 'status', '<>', SiteDict::EXPIRE ],
+            [ 'expire_time', 'between', [ 1, time() ] ],
+        ])->field('site_id,status,site_name')->select()->toArray();
+    }
+
+    /**
+     * 站点到期(计划任务专用,切勿调用)
+     * @param int $site_id
+     * @return bool
+     */
+    public function expire(int $site_id)
+    {
+        $site = $this->find($site_id);
+        if ($site->isEmpty()) throw new CommonException('SITE_NOT_EXIST');
+        if ($site->status == SiteDict::EXPIRE) throw new CommonException('SITE_EXPIRE');
+        $this->model->where([ [
+            'site_id', '=', $site_id
+        ] ])->update(
+            [
+                'status' => SiteDict::EXPIRE,
+            ]
+        );
+        Cache::delete('site_info_cache' . $site_id);
+        Cache::tag(self::$cache_tag_name . $site_id)->clear();
+        return true;
+    }
+
+    /**
+     * 获取站点支持的应用插件
+     * 返回站点可用的应用/插件 key 白名单，不包含系统菜单标识（''），由调用方自行补充
+     * @param int $site_id
+     * @return array
+     */
+    public function getAddonKeysBySiteId(int $site_id)
+    {
+        $cache_name = 'site_addon_key_cache';
+        return cache_remember(
+            $cache_name . $site_id,
+            function() use ($site_id) {
+                $site_info = ( new Site() )->where([ [ 'site_id', '=', $site_id ] ])->field('group_id,app_type,app,addons')->findOrEmpty();
+                if ($site_info->isEmpty()) return [];
+
+                //平台站点(site_id=0)/平台端站点不属于任何套餐，可用应用插件范围等于全部已安装插件
+                //与 get_site_addons(0)/BaseDict::getLocalAddons() 的平台端口径保持一致，
+                //避免"平台站点 addons 恒为空"导致受限成员菜单的插件白名单为空而被整体过滤
+                if ($site_id === 0 || $site_info[ 'app_type' ] == AppTypeDict::ADMIN) {
+                    return array_values(array_unique(array_filter(( new Addon() )->column('key'))));
+                }
+
+                $addon_keys = [];
+                //套餐(site_group)中包含的应用与插件
+                $group_id = $site_info[ 'group_id' ] ?? 0;
+                if ($group_id > 0) {
+                    $group = ( new SiteGroup() )->field('app,addon')->findOrEmpty($group_id);
+                    if (!$group->isEmpty()) {
+                        $addon_keys = array_merge($addon_keys, (array) $group[ 'app' ], (array) $group[ 'addon' ]);
+                    }
+                }
+                //站点自身拥有的应用与插件（Site 模型已做 json 转换，字段为数组）
+                $addon_keys = array_merge($addon_keys, (array) $site_info[ 'app' ], (array) $site_info[ 'addons' ]);
+                return array_values(array_unique(array_filter($addon_keys)));
+            },
+            self::$cache_tag_name . $site_id
+        );
+    }
+
+    /**
+     * 根据站点初始化数据
+     * @param $site_id
+     * @param $tables
+     * @return true
+     */
+    public function siteInitBySiteId($site_id,$tables)
+    {
+        $prefix = config('database.connections.mysql.prefix');
+        if (!empty($prefix)){
+            foreach ($tables as &$value){
+                $value = $prefix.$value;
+            }
+        }
+        $user_ids = [];
+        Db::startTrans();
+        try {
+            foreach ($tables as $table) {
+                // 判断表是否存在
+                if (!Db::query("SHOW TABLES LIKE '{$table}'")) {
+                    continue;
+                }
+
+                $where = [
+                    [ 'site_id', '=', $site_id ]
+                ];
+
+                if ($table == $prefix.'sys_user_role'){
+                    $where[] = [ 'is_admin', '=', 0 ];
+                    $user_ids = (new SysUserRole())->where([ [ 'site_id', '=', $site_id ], [ 'is_admin', '=', 0 ] ])->column('uid');
+                }
+
+                if ($table == $prefix.'sys_user'){
+                    if (empty($user_ids)){
+                        continue;
+                    }
+                    $where = [ [ 'uid', 'in', $user_ids ] ];
+                }
+
+                // 删除对应站点的数据
+                Db::table($table)->where($where)->delete();
+            }
+            Db::commit();
+            return true;
+        } catch (\Exception $e) {
+            Db::rollback();
+            throw new CommonException($e->getMessage());
+        }
+    }
+
+}

@@ -1,0 +1,14 @@
+{
+  "serviceName": "服务名称",
+  "serviceNamePlaceholder": "请输入服务名称",
+  "desc": "描述",
+  "descPlaceholder": "请输入描述",
+  "addServe": "添加商品服务",
+  "serviceList": "商品服务列表",
+  "updateServe": "编辑商品服务",
+  "serveDeleteTips": "确定要删除该数据吗？",
+  "batchDelete": "批量删除",
+  "batchDeleteTips": "确定删除已选择的 {count} 条商品服务吗？",
+  "batchDeleteSuccess": "批量删除成功",
+  "imagePlaceholder": "请上传服务图片"
+}

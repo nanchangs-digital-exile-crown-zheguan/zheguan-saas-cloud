@@ -1,0 +1,9 @@
+{
+  "kind": "framework",
+  "buildId": "7320102d6868",
+  "commonManifest": {
+    "common/vendor.js": "ac045fdb468d5786cf4492c974a50911fbc60c99777de7b06691e777058cad2d"
+  },
+  "time": "2026-10-17T09:30:06.779Z",
+  "gitCommit": "8a6e54ee6bd3dec9ecf95df2faf798df2dd1a4a5"
+}

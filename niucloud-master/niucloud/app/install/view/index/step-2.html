@@ -1,0 +1,124 @@
+{extend name="base"/}
+{block name="head"}
+<div class="page-title">环境检测</div>
+<div class="page-sub">系统已检测运行所需的 PHP 扩展与目录权限，全部通过后即可继续下一步。</div>
+{/block}
+{block name="main"}
+
+<div class="summary-banner {if !$continue}fail{/if}" id="ncSummary">
+	<div class="summary-left">
+		{if $continue}
+		<svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="8" fill="#16A34A"/><path d="M5 9.2L7.6 11.8L13 6" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+		{else /}
+		<svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="8" fill="#E5484D"/><path d="M5.8 5.8l6.4 6.4M12.2 5.8l-6.4 6.4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>
+		{/if}
+		<div class="summary-text" id="ncSummaryText">
+			{if $continue}环境检测通过，所有运行环境与目录权限均符合要求{else /}环境检测未通过，请根据下方标红项处理后再继续{/if}
+		</div>
+	</div>
+	<button type="button" class="link-btn" id="ncRecheck">重新检测</button>
+</div>
+
+<div class="card">
+	<div class="card-head">
+		<div class="card-head-left">
+			<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round"/></svg>
+			<div class="card-title">运行环境</div>
+		</div>
+		<div class="badge {if !$continue}err{/if}" id="ncEnvBadge">检测中</div>
+	</div>
+	<div class="card-divider"></div>
+	<div class="env-grid">
+		<div class="env-item {if $verison}check-ok{else /}check-err{/if}">
+			<div class="name">PHP 版本</div>
+			<div class="val mono {if !$verison}err{/if}" title="要求：php8.2.0及以上">{$phpv}</div>
+			<span class="icon {if $verison}ok{else /}err{/if}"></span>
+		</div>
+		{foreach $system_variables as $variables_key => $variables_item}
+		<div class="env-item {if $variables_item.status}check-ok{else /}check-err{/if}">
+			<div class="name">{$variables_item.name}</div>
+			<div class="val {if !$variables_item.status}err{/if}" title="要求：{$variables_item.need}">
+				{if $variables_item.status}已开启{else /}未开启{/if}
+			</div>
+			<span class="icon {if $variables_item.status}ok{else /}err{/if}"></span>
+		</div>
+		{/foreach}
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-head">
+		<div class="card-head-left">
+			<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" stroke="#2563EB" stroke-width="1.7" stroke-linejoin="round"/></svg>
+			<div class="card-title">目录与文件权限</div>
+		</div>
+		<div class="badge {if !$continue}err{/if}" id="ncPermBadge">检测中</div>
+	</div>
+	<div class="card-divider"></div>
+	<div class="perm-list">
+		{foreach $dirs_list as $dirs_key => $dirs_item}
+		<div class="perm-row">
+			<span class="icon {if $dirs_item.is_readable && $dirs_item.is_write}ok{else /}err{/if}"></span>
+			<div class="perm-path mono">{$dirs_item.path_name}</div>
+			<div class="perm-badges">
+				<span class="perm-badge {if !$dirs_item.is_readable}err{/if}">读取{if $dirs_item.is_readable}可用{else /}不可用{/if}</span>
+				<span class="perm-badge {if !$dirs_item.is_write}err{/if}">写入{if $dirs_item.is_write}可用{else /}不可用{/if}</span>
+			</div>
+		</div>
+		{/foreach}
+	</div>
+</div>
+
+{/block}
+{block name="foot"}
+<div class="footer-bar">
+	<div class="footer-hint mono">PHP {$phpv} · {$server}</div>
+	<div class="btn-group">
+		<button type="button" class="btn btn-secondary" onclick="window.location.href='{$root_url}/install.php/index/index?step=1'">上一步</button>
+		{if $continue}
+		<button type="button" class="btn btn-primary" onclick="window.location.href='{$root_url}/install.php/index/index?step=3'">
+			继续
+			<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13M12 5l7 7-7 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+		</button>
+		{else /}
+		<button type="button" class="btn btn-primary" disabled="disabled">
+			继续
+			<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13M12 5l7 7-7 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+		</button>
+		{/if}
+	</div>
+</div>
+{/block}
+{block name="script"}
+<script>
+	NC.setStep(2);
+
+	$(function () {
+		var envTotal = $('.env-grid .env-item').length;
+		var envOk = $('.env-grid .env-item.check-ok').length;
+		var permTotal = $('.perm-list .perm-row').length;
+		var permOk = $('.perm-list .perm-row').filter(function () {
+			return $(this).find('.icon').hasClass('ok');
+		}).length;
+
+		var envBadge = $('#ncEnvBadge');
+		envBadge.text(envOk + ' / ' + envTotal + ' 项通过');
+		envBadge.toggleClass('err', envOk < envTotal);
+
+		var permBadge = $('#ncPermBadge');
+		permBadge.text(permOk + ' / ' + permTotal + ' 项可读写');
+		permBadge.toggleClass('err', permOk < permTotal);
+
+		if (envOk === envTotal && permOk === permTotal) {
+			$('#ncSummaryText').text('环境检测通过 · ' + envTotal + ' 项运行环境与 ' + permTotal + ' 项目录权限全部符合要求');
+		} else {
+			$('#ncSummary').addClass('fail');
+			$('#ncSummaryText').text('环境检测未通过 · 运行环境 ' + envOk + '/' + envTotal + '，目录权限 ' + permOk + '/' + permTotal + '，请处理标红项后重新检测');
+		}
+
+		$('#ncRecheck').on('click', function () {
+			window.location.reload();
+		});
+	});
+</script>
+{/block}
